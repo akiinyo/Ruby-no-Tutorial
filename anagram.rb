@@ -1,13 +1,13 @@
-def anagram_check(word_1, word_2)
+def anagram?(word_1, word_2)
   word_1.chars.sort == word_2.chars.sort
 end
 
 if $0 == __FILE__
   word_1, word_2 = ARGV[0], ARGV[1]
 
-  if word_1 && word_2
+  if ARGV.size == 2
 
-    if anagram_check(word_1, word_2)
+    if anagram?(word_1, word_2)
       puts 'アナグラム'
     else
       puts 'アナグラムでない'
