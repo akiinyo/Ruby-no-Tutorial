@@ -1,6 +1,3 @@
-top     = {field: '表', point: 0}
-bottom  = {field: '裏', point: 0}
-
 class String
   def numeral?
     Integer(self)
@@ -10,17 +7,19 @@ class String
   end
 end
 
-def play_game(top, bottom)
-  quit_flg = false
+def play_game(io)
+  top      = {field: '表', point: []}
+  bottom   = {field: '裏', point: []}
 
+  quit_flg = false
   9.times do |i|
     [top, bottom].each do |team|
       print "#{i+1}回#{team[:field]}："
 
-      inputted = gets.chomp
+      inputted = io.gets.chomp
 
       if inputted.numeral?
-        team[:point] += inputted.to_i
+        team[:point] << inputted.to_i
       elsif inputted == 'quit'
         quit_flg = true
         break
@@ -31,20 +30,26 @@ def play_game(top, bottom)
     end
     break if quit_flg
   end
+
+  [top[:point], bottom[:point]]
 end
 
 def display_result(top_point, bottom_point)
-  puts "【試合結果】"
-  puts "#{top_point} 対 #{bottom_point} で"
+  top, bottom = [top_point.inject(0, :+), bottom_point.inject(0, :+)]
 
-  if top_point > bottom_point
+  puts "【試合結果】"
+  puts "#{top} 対 #{bottom} で"
+
+  if top > bottom
     puts "表チームの勝ちです"
-  elsif top_point == bottom_point
+  elsif top == bottom
     puts "引き分けです！延長はありません！"
   else
     puts "裏チームの勝ちです"
   end
 end
 
-play_game(top, bottom)
-display_result(top[:point], bottom[:point])
+if $0 == __FILE__
+  top_point, bottom_point = play_game(STDIN)
+  display_result(top_point, bottom_point)
+end
