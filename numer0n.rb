@@ -1,41 +1,59 @@
 # coding: utf-8
 
-def judge(number, call)
-  bite = number & call
-  eat = 0
+class Numer0n
+  attr_accessor :number, :eat, :bite, :count
 
-  number.zip(call).each do |n, c|
-    if n == c
-      eat += 1
-      bite.each do |b|
-        if n == b
-          bite.delete(b)
-        end
-      end
-    end
+  def initialize
+    @number = ('0'..'9').to_a.sample(3)
+    @count  = 0
   end
 
-  [eat, bite.size]
+  def judge(call)
+    @bite = @number & call
+    @eat  = 0
+
+    number.zip(call).each do |n, c|
+      if n == c
+        @eat += 1
+        @bite.delete_if {|b| n == b }
+      end
+    end
+
+    @count += 1
+    @eat, @bite = eat, bite.size
+  end
+
+  def display_result
+    "#{@eat}EAT-#{@bite}BITE"
+  end
+
+  def perfect?
+    @eat == 3
+  end
 end
 
 if $0 == __FILE__
-  number = ('0'..'9').to_a.shuffle.slice(0, 3)
-  three_eat = false
-  count = 1
+  numer0n = Numer0n.new
 
-  while !three_eat
+  while !numer0n.perfect?
     print 'コールする3桁の番号を入力してください：'
-
     call = gets.chomp.split('')
-    eat, bite = judge(number, call)
+    numer0n.judge(call)
+    puts numer0n.display_result
 
-    puts "#{eat}EAT-#{bite}BITE"
+    if numer0n.perfect?
+      puts "#{numer0n.count}ターンかかりました。"
+      puts '練習を続けますか？続ける場合は1を、終了する場合には2を入力してください。'
 
-    if eat == 3
-      three_eat = true
-      puts "#{count}ターンかかりました"
+      case gets.chomp
+      when '1'
+        numer0n = Numer0n.new
+        puts '新しい番号を作成しました。'
+      when '2'
+        puts '終了します。おつかれさまでした。'
+      else
+        puts 'ぺろーん。'
+      end
     end
-
-    count += 1
   end
 end
