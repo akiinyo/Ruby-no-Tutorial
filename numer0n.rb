@@ -26,6 +26,12 @@ class Numer0n
     return @eat, @bite
   end
 
+  def valid?(call)
+    return false unless call.size == DIGIT
+
+    call.size == call.uniq.size
+  end
+
   def display_result
     "#{@eat}EAT-#{@bite}BITE"
   end
@@ -38,16 +44,10 @@ end
 if $0 == __FILE__
   numer0n = Numer0n.new
 
-  def valid?(call)
-    return false unless call.size == Numer0n::DIGIT
-
-    call.size == call.uniq.size
-  end
-
   while !numer0n.perfect?
     print 'コールする3桁の番号を入力してください：'
     call = gets.chomp.split('')
-    if valid?(call)
+    if numer0n.valid?(call)
       numer0n.judge(call)
       puts numer0n.display_result
 
