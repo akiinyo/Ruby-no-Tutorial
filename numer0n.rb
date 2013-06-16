@@ -2,6 +2,7 @@
 
 class Numer0n
   attr_accessor :number, :eat, :bite, :count
+  DIGIT = 3
 
   def initialize
     @number = ('0'..'9').to_a.sample(3)
@@ -12,7 +13,7 @@ class Numer0n
     @bite = @number & call
     @eat  = 0
 
-    number.zip(call).each do |n, c|
+    @number.zip(call).each do |n, c|
       if n == c
         @eat += 1
         @bite.delete_if {|b| n == b }
@@ -20,7 +21,9 @@ class Numer0n
     end
 
     @count += 1
-    @eat, @bite = eat, bite.size
+    @bite = @bite.size
+
+    return @eat, @bite
   end
 
   def display_result
@@ -28,7 +31,7 @@ class Numer0n
   end
 
   def perfect?
-    @eat == 3
+    @eat == DIGIT
   end
 end
 
