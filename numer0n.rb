@@ -5,7 +5,7 @@ class Numer0n
   DIGIT = 3
 
   def initialize
-    @number = ('0'..'9').to_a.sample(3)
+    @number = ('0'..'9').to_a.sample(DIGIT)
     @count  = 0
   end
 
@@ -27,9 +27,7 @@ class Numer0n
   end
 
   def valid?(call)
-    return false unless call.size == DIGIT
-
-    call.size == call.uniq.size
+    (call.size == DIGIT) && (call.size == call.uniq.size)
   end
 
   def display_result
