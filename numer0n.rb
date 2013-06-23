@@ -10,6 +10,8 @@ class Numer0n
   end
 
   def judge(call)
+    raise ArgumentError, '( ∵)コールできるのは *重複のない3桁* の番号だけです(∵ )' unless valid?(call)
+
     @bite = @number & call
     @eat  = 0
 
@@ -45,27 +47,26 @@ if $0 == __FILE__
   while !numer0n.perfect?
     print 'コールする3桁の番号を入力してください：'
     call = gets.chomp.split('')
-    if numer0n.valid?(call)
+    begin
       numer0n.judge(call)
       puts numer0n.display_result
+    rescue ArgumentError => e
+      puts e.message
+    end
 
-      if numer0n.perfect?
-        puts "#{numer0n.count}ターンかかりました。"
-        puts '練習を続けますか？続ける場合は1を、終了する場合には2を入力してください。'
+    if numer0n.perfect?
+      puts "#{numer0n.count}ターンかかりました。"
+      puts '練習を続けますか？続ける場合は1を、終了する場合には2を入力してください。'
 
-        case gets.chomp
-        when '1'
-          numer0n = Numer0n.new
-          puts '新しい番号を作成しました。'
-        when '2'
-          puts '終了します。おつかれさまでした。'
-        else
-          puts 'ぺろーん。'
-        end
+      case gets.chomp
+      when '1'
+        numer0n = Numer0n.new
+        puts '新しい番号を作成しました。'
+      when '2'
+        puts '終了します。おつかれさまでした。'
+      else
+        puts 'ぺろーん。'
       end
-
-    else
-      puts '( ∵)コールできるのは *重複のない3桁* の番号だけです(∵ )'
     end
   end
 end
