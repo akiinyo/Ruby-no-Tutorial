@@ -1,11 +1,11 @@
 # coding: utf-8
 
 class Numer0n
-  attr_accessor :number, :eat, :bite, :count
+  attr_reader :number, :eat, :bite, :count
   DIGIT = 3
 
-  def initialize
-    @number = ('0'..'9').to_a.sample(DIGIT)
+  def initialize(number = ('0'..'9').to_a.sample(DIGIT))
+    @number = number
     @count  = 0
   end
 
@@ -24,8 +24,6 @@ class Numer0n
 
     @count += 1
     @bite = @bite.size
-
-    return @eat, @bite
   end
 
   def valid?(call)
