@@ -4,9 +4,13 @@ class Numer0n
   attr_reader :number, :eat, :bite, :count
   DIGIT = 3
 
-  def initialize(number = ('0'..'9').to_a.sample(DIGIT))
+  def initialize(number = generate_random_number)
     @number = number
     @count  = 0
+  end
+
+  def generate_random_number
+    ('0'..'9').to_a.sample(DIGIT)
   end
 
   def judge(call)
