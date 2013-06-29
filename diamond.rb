@@ -5,3 +5,9 @@ hight = ARGV[0].to_i
   print '*' * ((i * 2) - 1)
   puts ''
 end
+
+hight.downto(1) do |i|
+  print ' ' * (hight - i)
+  print '*' * ((i * 2) - 1)
+  puts ''
+end
