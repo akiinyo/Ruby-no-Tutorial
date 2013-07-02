@@ -13,10 +13,14 @@ midpoint.downto(1) do |i|
 end
 
 
-1.upto(midpoint - 1) do |i|
-  puts ('*' * ((i * 2) - 1)).center((midpoint * 2) - 1)
+def triangle(n, hight)
+  ('*' * ((n * 2) - 1)).center((hight * 2) - 1)
 end
 
-midpoint.downto(1) do |i|
-  puts ('*' * ((i * 2) - 1)).center((midpoint * 2) - 1)
+1.upto(midpoint - 1) do |n|
+  puts triangle(n, midpoint)
+end
+
+midpoint.downto(1) do |n|
+  puts triangle(n, midpoint)
 end
