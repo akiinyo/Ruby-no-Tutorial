@@ -33,13 +33,21 @@ roman = {
 
 number = ARGV[0].to_i
 
-if roman.has_value?(number)
-  puts roman.key(number)
-else
-  m = number / 1000
-  c = number % 1000 / 100
-  x = number % 100 / 10
-  i = number % 10
+def can_convert?(number)
+  (0 < number) && (number < 4000)
+end
 
-  puts roman.key(m * 1000) + roman.key(c * 100) + roman.key(x * 10) + roman.key(i)
+if can_convert?(number)
+  if roman.has_value?(number)
+    puts roman.key(number)
+  else
+    m = number / 1000
+    c = number % 1000 / 100
+    x = number % 100 / 10
+    i = number % 10
+
+    puts roman.key(m * 1000) + roman.key(c * 100) + roman.key(x * 10) + roman.key(i)
+  end
+else
+  puts 'ローマ数字に変換できるのは1から3999までです！'
 end
