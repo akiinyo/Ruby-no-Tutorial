@@ -3,13 +3,23 @@ roman_c = %W(#{} C CC CCC CD D DC DCC DCCC CM)
 roman_x = %W(#{} X XX XXX XL L LX LXX LXXX XC)
 roman_i = %W(#{} I II III IV V VI VII VIII IX)
 
-def can_convert?(number)
-  (1..3999).include? number
+def in_range?(number)
+  ('1'..'3999').include? number
 end
 
-number = ARGV[0].to_i
+def integral?(str)
+  str =~ /^[0-9]+$/
+end
 
-if can_convert?(number)
+def valid?(number)
+  integral?(number) && in_range?(number)
+end
+
+input = ARGV[0]
+
+if valid?(input)
+  number = input.to_i
+
   m = number / 1000
   c = number % 1000 / 100
   x = number % 100 / 10
@@ -23,5 +33,5 @@ if can_convert?(number)
 
   puts roman
 else
-  puts 'ローマ数字に変換できるのは1から3999までです！'
+  puts 'ローマ数字に変換できるのは1から3999までの整数です！'
 end
