@@ -13,6 +13,12 @@ class Integer
   end
 end
 
+class String
+  def integral?
+    self =~ /^[0-9]+$/
+  end
+end
+
 def in_range?(number)
   ('1'..'3999').include? number
 end
@@ -22,7 +28,7 @@ def integral?(str)
 end
 
 def valid?(number)
-  integral?(number) && in_range?(number)
+  number.integral? && in_range?(number)
 end
 
 number = ARGV[0]
