@@ -1,7 +1,17 @@
-roman_m = %W(#{} M MM MMM)
-roman_c = %W(#{} C CC CCC CD D DC DCC DCCC CM)
-roman_x = %W(#{} X XX XXX XL L LX LXX LXXX XC)
-roman_i = %W(#{} I II III IV V VI VII VIII IX)
+class Integer
+  ROMAN_M = %W(#{} M MM MMM)
+  ROMAN_W = %W(#{} C CC CCC CD D DC DCC DCCC CM)
+  ROMAN_X = %W(#{} X XX XXX XL L LX LXX LXXX XC)
+  ROMAN_I = %W(#{} I II III IV V VI VII VIII IX)
+
+  def to_roman
+    roman = ''
+    roman << ROMAN_M[self / 1000]
+    roman << ROMAN_W[self % 1000 / 100]
+    roman << ROMAN_X[self % 100 / 10]
+    roman << ROMAN_I[self % 10]
+  end
+end
 
 def in_range?(number)
   ('1'..'3999').include? number
@@ -15,23 +25,10 @@ def valid?(number)
   integral?(number) && in_range?(number)
 end
 
-input = ARGV[0]
+number = ARGV[0]
 
-if valid?(input)
-  number = input.to_i
-
-  m = number / 1000
-  c = number % 1000 / 100
-  x = number % 100 / 10
-  i = number % 10
-
-  roman = ''
-  roman << roman_m[m]
-  roman << roman_c[c]
-  roman << roman_x[x]
-  roman << roman_i[i]
-
-  puts roman
+if valid?(number)
+  puts number.to_i.to_roman
 else
   puts 'ローマ数字に変換できるのは1から3999までの整数です！'
 end
