@@ -5,6 +5,8 @@ class Integer
   ROMAN_I = %W(#{} I II III IV V VI VII VIII IX)
 
   def to_roman
+    raise RangeError unless in_range?(self)
+
     roman = ''
     roman << ROMAN_M[self / 1000]
     roman << ROMAN_W[self % 1000 / 100]
@@ -13,28 +15,13 @@ class Integer
   end
 end
 
-class String
-  def integral?
-    self =~ /^[0-9]+$/
-  end
-end
-
 def in_range?(number)
-  ('1'..'3999').include? number
+  (1..3999).include? number
 end
 
-def integral?(str)
-  str =~ /^[0-9]+$/
-end
-
-def valid?(number)
-  number.integral? && in_range?(number)
-end
-
-number = ARGV[0]
-
-if valid?(number)
-  puts number.to_i.to_roman
-else
+begin
+  puts Integer(ARGV[0]).to_roman
+rescue ArgumentError, RangeError
   puts 'ローマ数字に変換できるのは1から3999までの整数です！'
 end
+
