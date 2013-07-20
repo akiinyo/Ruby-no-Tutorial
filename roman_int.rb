@@ -13,10 +13,12 @@ class Integer
     roman << ROMAN_X[self % 100 / 10]
     roman << ROMAN_I[self % 10]
   end
-end
 
-def in_range?(number)
-  (1..3999).include? number
+  private
+
+  def in_range?(number)
+    (1..3999).include? number
+  end
 end
 
 begin
@@ -24,4 +26,3 @@ begin
 rescue ArgumentError, RangeError
   puts 'ローマ数字に変換できるのは1から3999までの整数です！'
 end
-
