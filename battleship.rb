@@ -28,6 +28,7 @@ def build_ship_by_head(head)
 end
 
 orion = build_ship_by_head(build_head)
+count = 0
 
 while !orion.empty?
   target = []
@@ -35,6 +36,7 @@ while !orion.empty?
   print 'Please enter the shooting position：'
 
   gets.chomp.chars{|char| target << char.upcase }
+  count += 1
 
   if orion.include?(target)
     orion.delete(target)
@@ -47,3 +49,5 @@ while !orion.empty?
     puts 'miss'
   end
 end
+
+puts "You threw #{count} bombs"
