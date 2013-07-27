@@ -1,31 +1,33 @@
-row = %w(A B C D E F G)
-col = %w(1 2 3 4 5 6 7)
+ROW = %w(A B C D E F G)
+COL = %w(1 2 3 4 5 6 7)
 
-head_row = row.sample
+def build_head
+  head_row = ROW.sample
+  head_col = head_row > 'E' ? COL[0..4].sample : COL.sample
 
-if head_row > 'E'
-  head_col = col[0..4].sample
-else
-  head_col = col.sample
+  [head_row, head_col]
 end
 
-orion = [[head_row, head_col]]
+def direction(head_row, head_col)
+  return 'horizontal' if head_row > 'E'
+  return 'vertical'   if head_col > '5'
 
-if head_row > 'E'
-  direction = 'horizontal'
-elsif head_col > '5'
-  direction = 'vertical'
-else
-  direction = %w(vertical horizontal).sample
+  %w(vertical horizontal).sample
 end
 
-if direction == 'vertical'
-  orion << [row[row.index(orion[0][0]).succ], orion[0][1]]
-  orion << [row[row.index(orion[0][0]).succ.succ], orion[0][1]]
-else
-  orion << [orion[0][0], orion[0][1].succ]
-  orion << [orion[0][0], orion[0][1].succ.succ]
+def build_ship_by_head(head)
+  ship = [head]
+
+  if direction(head[0], head[1]) == 'vertical'
+    ship << [ROW[ROW.index(head[0]).succ], head[1]]
+    ship << [ROW[ROW.index(head[0]).succ.succ], head[1]]
+  else
+    ship << [head[0], head[1].succ]
+    ship << [head[0], head[1].succ.succ]
+  end
 end
+
+orion = build_ship_by_head(build_head)
 
 while !orion.empty?
   target = []
