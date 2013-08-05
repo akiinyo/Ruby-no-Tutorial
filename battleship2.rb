@@ -1,33 +1,45 @@
-BATTLE_FIELD = Array.new(49)
+BATTLE_FIELD = Array.new(49, 0)
 
 def direction
   %w(horizontal vertical).sample
 end
 
-def build_three_ships
+def build_ships(ship_length)
   ships = []
 
-  3.times{|i| mark_on_field(i) }
-  3.times{|mark| ships << BATTLE_FIELD.each_index.select{|i| BATTLE_FIELD[i] == mark }}
+  3.times do |i|
+    head = ((0..46).to_a).sample
+    ship_positions = positions(head, ship_length)
+
+    if within_field?(ship_positions) && not_crash?(ship_positions)
+      mark(ship_positions, i + 1)
+    else
+      redo
+    end
+  end
+
+  3.times{|n| ships << BATTLE_FIELD.each_index.select{|i| BATTLE_FIELD[i + 1] == n + 1 }}
   ships
 end
 
-def mark_on_field(mark)
-  head = ((0..46).to_a).sample
-
+def positions(head, ship_length)
   if direction == 'horizontal'
-    3.times do |i|
-      BATTLE_FIELD[head + i] = mark
-    end
+    (head..(head + ship_length - 1)).to_a
   else
-    3.times do |i|
-      if head + (7 * i) > 48
-        BATTLE_FIELD[(head + (7 * i) - 49)] = mark
-      else
-        BATTLE_FIELD[(head + (7 * i))] = mark
-      end
-    end
+    [head, (head + 7), (head + 7*2)]
   end
+end
+
+def within_field?(positions)
+  positions.last < 49
+end
+
+def not_crash?(positions)
+  positions.map{|position| BATTLE_FIELD[position] }.select{|n| !n.zero? }.empty?
+end
+
+def mark(positions, num)
+  positions.each{|position| BATTLE_FIELD[position] = num }
 end
 
 def target(input_position)
@@ -35,13 +47,13 @@ def target(input_position)
   col = input_position.slice(1).to_i
 
   case row
-  when 'A' then (-1 + col)
-  when 'B' then (6  + col)
-  when 'C' then (13 + col)
-  when 'D' then (20 + col)
-  when 'E' then (27 + col)
-  when 'F' then (34 + col)
-  when 'G' then (41 + col)
+  when 'A' then (0 + col)
+  when 'B' then (7  + col)
+  when 'C' then (14 + col)
+  when 'D' then (21 + col)
+  when 'E' then (28 + col)
+  when 'F' then (35 + col)
+  when 'G' then (42 + col)
   end
 end
 
@@ -61,8 +73,7 @@ def ships
   ]
 end
 
-VEGA, ALTAIR, DENEB = build_three_ships
-
+VEGA, ALTAIR, DENEB = build_ships(3)
 
 count  = 0
 
