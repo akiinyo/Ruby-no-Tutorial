@@ -4,27 +4,32 @@ def direction
   %w(horizontal vertical).sample
 end
 
-def build_ships(ship_length)
-  ships = []
+def build_ships(ship_names, ship_length)
+  mark_on_field(ship_names.size, ship_length)
 
-  3.times do |i|
+  ship_names.each_with_index.map do |name, n|
+    ship_positions = BATTLE_FIELD.each_index.select {|i| BATTLE_FIELD[i + 1] == n + 1 }
+
+    {name: name, positions: ship_positions}
+  end
+end
+
+def mark_on_field(number, ship_length)
+  number.times do |i|
     head = ((0..46).to_a).sample
     ship_positions = positions(head, ship_length)
 
     if within_field?(ship_positions) && not_crash?(ship_positions)
-      mark(ship_positions, i + 1)
+      ship_positions.each {|position| BATTLE_FIELD[position] = i + 1 }
     else
       redo
     end
   end
-
-  3.times{|n| ships << BATTLE_FIELD.each_index.select{|i| BATTLE_FIELD[i + 1] == n + 1 }}
-  ships
 end
 
 def positions(head, ship_length)
   if direction == 'horizontal'
-    (head..(head + ship_length - 1)).to_a
+    (head...(head + ship_length)).to_a
   else
     [head, (head + 7), (head + 7*2)]
   end
@@ -35,11 +40,7 @@ def within_field?(positions)
 end
 
 def not_crash?(positions)
-  positions.map{|position| BATTLE_FIELD[position] }.select{|n| !n.zero? }.empty?
-end
-
-def mark(positions, num)
-  positions.each{|position| BATTLE_FIELD[position] = num }
+  BATTLE_FIELD.values_at(*positions).all? {|n| n.zero? }
 end
 
 def target(input_position)
@@ -57,33 +58,25 @@ def target(input_position)
   end
 end
 
-def complete?
-  ships.map{|ship| ship[:positions] }.flatten.empty?
+def complete?(ships)
+  ships.map {|ship| ship[:positions] }.flatten.empty?
 end
 
-def miss?(target)
-  !(ships.map{|ship| ship[:positions] }.flatten.include? target)
+def miss?(ships, target)
+  !(ships.map {|ship| ship[:positions] }.flatten.include? target)
 end
 
-def ships
-  [
-    {name: 'vega',   positions: VEGA},
-    {name: 'altair', positions: ALTAIR},
-    {name: 'deneb',  positions: DENEB}
-  ]
-end
 
-VEGA, ALTAIR, DENEB = build_ships(3)
+ships = build_ships(%w(vega altair deneb), 3)
+count = 0
 
-count  = 0
-
-while !complete?
+while !complete?(ships)
   print 'Please enter the shooting position：'
 
   input_position = gets.chomp
   count += 1
 
-  if miss? target(input_position)
+  if miss?(ships, target(input_position))
     puts 'miss'
   else
     ships.each do |ship|
