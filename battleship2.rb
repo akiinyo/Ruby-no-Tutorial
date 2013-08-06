@@ -47,6 +47,9 @@ def target(input_position)
   row = input_position.slice(0).upcase
   col = input_position.slice(1).to_i
 
+  raise ArgumentError unless input_position.length == 2
+  raise ArgumentError unless (1..7).include? col
+
   case row
   when 'A' then (0 + col)
   when 'B' then (7  + col)
@@ -55,6 +58,7 @@ def target(input_position)
   when 'E' then (28 + col)
   when 'F' then (35 + col)
   when 'G' then (42 + col)
+  else raise ArgumentError
   end
 end
 
@@ -73,22 +77,26 @@ count = 0
 while !complete?(ships)
   print 'Please enter the shooting position：'
 
-  input_position = gets.chomp
-  count += 1
-
-  if miss?(ships, target(input_position))
-    puts 'miss'
-  else
-    ships.each do |ship|
-      if ship[:positions].delete target(input_position)
-        if ship[:positions].empty?
-          puts "You sunk #{ship[:name]}!"
-        else
-          puts 'hit!'
+  begin
+    input_position = gets.chomp
+    count += 1
+    if miss?(ships, target(input_position))
+      puts 'miss'
+    else
+      ships.each do |ship|
+        if ship[:positions].delete target(input_position)
+          if ship[:positions].empty?
+            puts "You sunk #{ship[:name]}!"
+          else
+            puts 'hit!'
+          end
         end
       end
     end
+  rescue ArgumentError
+    puts 'please enter within A1-G7'
   end
+
 end
 
 puts "You threw #{count} bombs"
