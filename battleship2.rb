@@ -19,7 +19,7 @@ def mark_on_field(number, ship_length)
     head = ((0..46).to_a).sample
     ship_positions = positions(head, ship_length)
 
-    if within_field?(ship_positions) && not_crash?(ship_positions)
+    if within_field?(ship_positions.last) && not_crash?(ship_positions)
       ship_positions.each {|position| BATTLE_FIELD[position] = i + 1 }
     else
       redo
@@ -35,8 +35,10 @@ def positions(head, ship_length)
   end
 end
 
-def within_field?(positions)
-  positions.last < 49
+def within_field?(last_position)
+  (last_position % 7 != 0) &&
+  (last_position % 7 != 1) &&
+  (last_position < 49)
 end
 
 def not_crash?(positions)
