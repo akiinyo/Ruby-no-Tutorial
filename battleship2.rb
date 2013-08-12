@@ -51,13 +51,13 @@ def target(input_position)
   raise ArgumentError unless (1..7).include? col
 
   case row
-  when 'A' then (0 + col)
-  when 'B' then (7  + col)
-  when 'C' then (14 + col)
-  when 'D' then (21 + col)
-  when 'E' then (28 + col)
-  when 'F' then (35 + col)
-  when 'G' then (42 + col)
+  when 'A' then (-1 + col)
+  when 'B' then (6  + col)
+  when 'C' then (13 + col)
+  when 'D' then (20 + col)
+  when 'E' then (27 + col)
+  when 'F' then (34 + col)
+  when 'G' then (41 + col)
   else raise ArgumentError
   end
 end
@@ -69,7 +69,6 @@ end
 def miss?(ships, target)
   !(ships.map {|ship| ship[:positions] }.flatten.include? target)
 end
-
 
 ships = build_ships(%w(vega altair deneb), 3)
 count = 0
