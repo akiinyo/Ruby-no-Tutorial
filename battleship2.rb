@@ -1,50 +1,53 @@
-BATTLE_FIELD = Array.new(49, 0)
+class Ship
+  attr_reader :name, :length, :positions
+  BATTLE_FIELD = Array.new(49, 0)
 
-def direction
-  %w(horizontal vertical).sample
-end
-
-def build_ships(ship_names, ship_length)
-  mark_on_field(ship_names.size, ship_length)
-
-  ship_names.each_with_index.map do |name, n|
-    ship_positions = BATTLE_FIELD.each_index.select {|i| BATTLE_FIELD[i + 1] == n + 1 }
-
-    {name: name, positions: ship_positions}
+  def initialize(name, length)
+    @name      = name
+    @length    = length
   end
-end
 
-def mark_on_field(number, ship_length)
-  max = BATTLE_FIELD.length - ship_length
+  def deploy
+    max = BATTLE_FIELD.length - @length
 
-  number.times do |i|
-    head = ((0..max).to_a).sample
-    ship_positions = positions(head, ship_length)
+    @length.times do |i|
+      head = ((0..max).to_a).sample
 
-    if within_field?(ship_positions.last) && not_crash?(ship_positions)
-      ship_positions.each {|position| BATTLE_FIELD[position] = i + 1 }
-    else
-      redo
+      @positions = if direction == 'horizontal'
+        (head...(head + @length)).to_a
+      else
+        [head, (head + 7), (head + 7*2)]
+      end
+
+      if within_field?(@positions.last) && not_crash?(@positions)
+        @positions.each {|position| BATTLE_FIELD[position] = 1 }
+      else
+        redo
+      end
     end
   end
-end
 
-def positions(head, ship_length)
-  if direction == 'horizontal'
-    (head...(head + ship_length)).to_a
-  else
-    [head, (head + 7), (head + 7*2)]
+  def direction
+    %w(horizontal vertical).sample
+  end
+
+  def within_field?(last_position)
+    (last_position % 7 != 0) &&
+    (last_position % 7 != 1) &&
+    (last_position < 49)
+  end
+
+  def not_crash?(positions)
+    BATTLE_FIELD.values_at(*positions).all? {|n| n.zero? }
   end
 end
 
-def within_field?(last_position)
-  (last_position % 7 != 0) &&
-  (last_position % 7 != 1) &&
-  (last_position < 49)
+def complete?(ships)
+  ships.map {|ship| ship.positions }.flatten.empty?
 end
 
-def not_crash?(positions)
-  BATTLE_FIELD.values_at(*positions).all? {|n| n.zero? }
+def miss?(ships, target)
+  !(ships.map {|ship| ship.positions }.flatten.include? target)
 end
 
 def target(input_position)
@@ -66,16 +69,14 @@ def target(input_position)
   end
 end
 
-def complete?(ships)
-  ships.map {|ship| ship[:positions] }.flatten.empty?
-end
+vega   = Ship.new(:vega,   3)
+altair = Ship.new(:altair, 3)
+deneb  = Ship.new(:deneb,  3)
 
-def miss?(ships, target)
-  !(ships.map {|ship| ship[:positions] }.flatten.include? target)
-end
-
-ships = build_ships(%w(vega altair deneb), 3)
+ships = [vega, altair, deneb]
 count = 0
+
+ships.each {|ship| ship.deploy }
 
 while !complete?(ships)
   print 'Please enter the shooting position：'
@@ -87,9 +88,9 @@ while !complete?(ships)
       puts 'miss'
     else
       ships.each do |ship|
-        if ship[:positions].delete target(input_position)
-          if ship[:positions].empty?
-            puts "You sunk #{ship[:name]}!"
+        if ship.positions.delete target(input_position)
+          if ship.positions.empty?
+            puts "You sunk #{ship.name}!"
           else
             puts 'hit!'
           end
