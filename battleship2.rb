@@ -42,65 +42,82 @@ class Ship
   end
 end
 
-def complete?(ships)
-  ships.map {|ship| ship.positions }.flatten.empty?
-end
+class BattleShipGame
+  attr_reader :count
 
-def miss?(ships, target)
-  !(ships.map {|ship| ship.positions }.flatten.include? target)
-end
-
-def target(input_position)
-  row = input_position.slice(0).upcase
-  col = input_position.slice(1).to_i
-
-  raise ArgumentError unless input_position.length == 2
-  raise ArgumentError unless (1..7).include? col
-
-  case row
-  when 'A' then (-1 + col)
-  when 'B' then (6  + col)
-  when 'C' then (13 + col)
-  when 'D' then (20 + col)
-  when 'E' then (27 + col)
-  when 'F' then (34 + col)
-  when 'G' then (41 + col)
-  else raise ArgumentError
+  def initialize(ships)
+    @ships = ships
+    @count = 0
   end
-end
 
-vega   = Ship.new(:vega,   3)
-altair = Ship.new(:altair, 3)
-deneb  = Ship.new(:deneb,  3)
+  def start
+    @ships.each {|ship| ship.deploy }
+  end
 
-ships = [vega, altair, deneb]
-count = 0
+  def complete?
+    @ships.map {|ship| ship.positions }.flatten.empty?
+  end
 
-ships.each {|ship| ship.deploy }
+  def judge(position)
+    @count += 1
 
-while !complete?(ships)
-  print 'Please enter the shooting position：'
-
-  begin
-    input_position = gets.chomp
-    count += 1
-    if miss?(ships, target(input_position))
-      puts 'miss'
+    if miss?(target(position))
+      'miss'
     else
-      ships.each do |ship|
-        if ship.positions.delete target(input_position)
+      @ships.each do |ship|
+        if hit(ship, position)
           if ship.positions.empty?
-            puts "You sunk #{ship.name}!"
+            return "hit! You sunk #{ship.name}!"
           else
-            puts 'hit!'
+            return 'hit!'
           end
         end
       end
     end
+  end
+
+  def miss?(target)
+    !(@ships.map {|ship| ship.positions }.flatten.include? target)
+  end
+
+  def hit(ship, position)
+    ship.positions.delete(target(position))
+  end
+
+  def target(position)
+    row = position.slice(0).upcase
+    col = position.slice(1).to_i
+
+    raise ArgumentError unless position.length == 2
+    raise ArgumentError unless (1..7).include? col
+
+    case row
+    when 'A' then (-1 + col)
+    when 'B' then (6  + col)
+    when 'C' then (13 + col)
+    when 'D' then (20 + col)
+    when 'E' then (27 + col)
+    when 'F' then (34 + col)
+    when 'G' then (41 + col)
+    else raise ArgumentError
+    end
+  end
+end
+
+game = BattleShipGame.new([
+  Ship.new(:vega, 3),
+  Ship.new(:altair, 3),
+  Ship.new(:deneb, 3)
+])
+game.start
+
+while !game.complete?
+  print 'Please enter the shooting position：'
+  begin
+    puts game.judge(gets.chomp)
   rescue ArgumentError
     puts 'please enter within A1-G7'
   end
-
 end
 
-puts "You threw #{count} bombs"
+puts "You threw #{game.count} bombs"
