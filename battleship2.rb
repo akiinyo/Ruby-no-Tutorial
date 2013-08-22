@@ -15,8 +15,10 @@ def build_ships(ship_names, ship_length)
 end
 
 def mark_on_field(number, ship_length)
+  max = BATTLE_FIELD.length - ship_length
+
   number.times do |i|
-    head = ((0..46).to_a).sample
+    head = ((0..max).to_a).sample
     ship_positions = positions(head, ship_length)
 
     if within_field?(ship_positions.last) && not_crash?(ship_positions)
