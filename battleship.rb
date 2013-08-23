@@ -1,53 +1,123 @@
-ROW = %w(A B C D E F G)
-COL = %w(1 2 3 4 5 6 7)
+class Ship
+  attr_reader :name, :length, :positions
+  BATTLE_FIELD = Array.new(49, 0)
 
-def build_head
-  head_row = ROW.sample
-  head_col = head_row > 'E' ? COL[0..4].sample : COL.sample
-
-  [head_row, head_col]
-end
-
-def direction(head_row, head_col)
-  return 'horizontal' if head_row > 'E'
-  return 'vertical'   if head_col > '5'
-
-  %w(vertical horizontal).sample
-end
-
-def build_ship_by_head(head)
-  ship = [head]
-
-  if direction(head[0], head[1]) == 'vertical'
-    ship << [ROW[ROW.index(head[0]).succ], head[1]]
-    ship << [ROW[ROW.index(head[0]).succ.succ], head[1]]
-  else
-    ship << [head[0], head[1].succ]
-    ship << [head[0], head[1].succ.succ]
+  def initialize(name, length)
+    @name      = name
+    @length    = length
   end
-end
 
-orion = build_ship_by_head(build_head)
-count = 0
+  def deploy
+    max = BATTLE_FIELD.length - @length
 
-while !orion.empty?
-  target = []
+    @length.times do |i|
+      head = ((0..max).to_a).sample
 
-  print 'Please enter the shooting position：'
+      @positions = if direction == 'horizontal'
+        (head...(head + @length)).to_a
+      else
+        [head, (head + 7), (head + 7*2)]
+      end
 
-  gets.chomp.chars{|char| target << char.upcase }
-  count += 1
-
-  if orion.include?(target)
-    orion.delete(target)
-    if orion.empty?
-      puts 'You sunk orion!'
-    else
-      puts 'hit!'
+      if within_field?(@positions.last) && not_crash?(@positions)
+        @positions.each {|position| BATTLE_FIELD[position] = 1 }
+      else
+        redo
+      end
     end
-  else
-    puts 'miss'
+  end
+
+  def direction
+    %w(horizontal vertical).sample
+  end
+
+  def within_field?(last_position)
+    (last_position % 7 != 0) &&
+    (last_position % 7 != 1) &&
+    (last_position < 49)
+  end
+
+  def not_crash?(positions)
+    BATTLE_FIELD.values_at(*positions).all? {|n| n.zero? }
   end
 end
 
-puts "You threw #{count} bombs"
+class BattleShipGame
+  attr_reader :count
+
+  def initialize(ships)
+    @ships = ships
+    @count = 0
+  end
+
+  def start
+    @ships.each {|ship| ship.deploy }
+  end
+
+  def complete?
+    @ships.map {|ship| ship.positions }.flatten.empty?
+  end
+
+  def judge(position)
+    @count += 1
+
+    if miss?(target(position))
+      'miss'
+    else
+      @ships.each do |ship|
+        if hit(ship, position)
+          if ship.positions.empty?
+            return "hit! You sunk #{ship.name}!"
+          else
+            return 'hit!'
+          end
+        end
+      end
+    end
+  end
+
+  def miss?(target)
+    !(@ships.map {|ship| ship.positions }.flatten.include? target)
+  end
+
+  def hit(ship, position)
+    ship.positions.delete(target(position))
+  end
+
+  def target(position)
+    row = position.slice(0).upcase
+    col = position.slice(1).to_i
+
+    raise ArgumentError unless position.length == 2
+    raise ArgumentError unless (1..7).include? col
+
+    case row
+    when 'A' then (-1 + col)
+    when 'B' then (6  + col)
+    when 'C' then (13 + col)
+    when 'D' then (20 + col)
+    when 'E' then (27 + col)
+    when 'F' then (34 + col)
+    when 'G' then (41 + col)
+    else raise ArgumentError
+    end
+  end
+end
+
+game = BattleShipGame.new([
+  Ship.new(:vega, 3),
+  Ship.new(:altair, 3),
+  Ship.new(:deneb, 3)
+])
+game.start
+
+while !game.complete?
+  print 'Please enter the shooting position：'
+  begin
+    puts game.judge(gets.chomp)
+  rescue ArgumentError
+    puts 'please enter within A1-G7'
+  end
+end
+
+puts "You threw #{game.count} bombs"
