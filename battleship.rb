@@ -1,14 +1,14 @@
 class Ship
   attr_reader :name, :length, :positions
-  BATTLE_FIELD = Array.new(49, 0)
 
-  def initialize(name, length)
+  def initialize(name, length = 3)
     @name      = name
     @length    = length
   end
 
-  def deploy
-    max = BATTLE_FIELD.length - @length
+  def deploy(battle_field)
+    @battle_field = battle_field
+    max           = @battle_field.length - @length
 
     @length.times do |i|
       head = ((0..max).to_a).sample
@@ -20,12 +20,26 @@ class Ship
       end
 
       if within_field?(@positions.last) && not_crash?(@positions)
-        @positions.each {|position| BATTLE_FIELD[position] = 1 }
+        @positions.each {|position| @battle_field[position] = 1 }
       else
         redo
       end
     end
   end
+
+  def be_hurt(position)
+    @positions.delete(position)
+  end
+
+  def unhurt?(position)
+    !@positions.include?(position)
+  end
+
+  def sunk?
+    @positions.empty?
+  end
+
+  private
 
   def direction
     %w(horizontal vertical).sample
@@ -38,7 +52,7 @@ class Ship
   end
 
   def not_crash?(positions)
-    BATTLE_FIELD.values_at(*positions).all? {|n| n.zero? }
+    @battle_field.values_at(*positions).all? {|n| n.zero? }
   end
 end
 
@@ -48,40 +62,41 @@ class BattleShipGame
   def initialize(ships)
     @ships = ships
     @count = 0
+    @field = Array.new(49, 0)
   end
 
   def start
-    @ships.each {|ship| ship.deploy }
+    @ships.each {|ship| ship.deploy(@field) }
   end
 
   def complete?
-    @ships.map {|ship| ship.positions }.flatten.empty?
+    @ships.all?(&:sunk?)
   end
 
   def judge(position)
     @count += 1
 
-    if miss?(target(position))
-      'miss'
-    else
-      @ships.each do |ship|
-        if hit(ship, position)
-          if ship.positions.empty?
-            return "hit! You sunk #{ship.name}!"
-          else
-            return 'hit!'
-          end
+    @ships.each do |ship|
+      if hit(ship, position)
+        if ship.sunk?
+          return "hit! You sunk #{ship.name}!"
+        else
+          return 'hit!'
         end
       end
     end
+
+    'miss'
   end
 
   def miss?(target)
-    !(@ships.map {|ship| ship.positions }.flatten.include? target)
+    @ships.all? {|ship| ship.unhurt?(target) }
   end
 
+  private
+
   def hit(ship, position)
-    ship.positions.delete(target(position))
+    ship.be_hurt(target(position))
   end
 
   def target(position)
@@ -105,9 +120,9 @@ class BattleShipGame
 end
 
 game = BattleShipGame.new([
-  Ship.new(:vega, 3),
-  Ship.new(:altair, 3),
-  Ship.new(:deneb, 3)
+  Ship.new(:vega),
+  Ship.new(:altair),
+  Ship.new(:deneb)
 ])
 game.start
 
