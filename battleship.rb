@@ -7,23 +7,26 @@ class Ship
   end
 
   def deploy(battle_field)
-    @battle_field = battle_field
-    max           = @battle_field.length - @length
+    max = battle_field.length - @length
 
-    @length.times do |i|
-      head = ((0..max).to_a).sample
+    @positions = []
+    while @positions.empty?
+      head       = ((0..max).to_a).sample
+      @positions = ship_positions(head)
 
-      @positions = if direction == 'horizontal'
-        (head...(head + @length)).to_a
+      if within_field?(@positions.last) && not_crash?(@positions, battle_field)
+        @positions.each {|position| battle_field[position] = 1 }
       else
-        [head, (head + 7), (head + 7*2)]
+        @positions = []
       end
+    end
+  end
 
-      if within_field?(@positions.last) && not_crash?(@positions)
-        @positions.each {|position| @battle_field[position] = 1 }
-      else
-        redo
-      end
+  def ship_positions(head)
+    if direction == 'horizontal'
+      (head...(head + @length)).to_a
+    else
+      [head, (head + 7), (head + 7*2)]
     end
   end
 
@@ -51,8 +54,8 @@ class Ship
     (last_position < 49)
   end
 
-  def not_crash?(positions)
-    @battle_field.values_at(*positions).all? {|n| n.zero? }
+  def not_crash?(positions, battle_field)
+    battle_field.values_at(*positions).all? {|n| n.zero? }
   end
 end
 
