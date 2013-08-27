@@ -2,8 +2,8 @@ class Ship
   attr_reader :name, :length, :positions
 
   def initialize(name, length = 3)
-    @name      = name
-    @length    = length
+    @name   = name
+    @length = length
   end
 
   def deploy(battle_field)
