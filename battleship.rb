@@ -89,10 +89,6 @@ class BattleShipGame
     'miss'
   end
 
-  def miss?(target)
-    @ships.all? {|ship| ship.unhurt?(target) }
-  end
-
   private
 
   def hit(ship, position)
