@@ -34,10 +34,6 @@ class Ship
     @positions.delete(position)
   end
 
-  def unhurt?(position)
-    !@positions.include?(position)
-  end
-
   def sunk?
     @positions.empty?
   end
