@@ -95,10 +95,11 @@ class BattleShipGame
   end
 
   def target(position)
+    raise ArgumentError unless position.length == 2
+
     row = position.slice(0).upcase
     col = position.slice(1).to_i
 
-    raise ArgumentError unless position.length == 2
     raise ArgumentError unless (1..7).include? col
 
     case row
