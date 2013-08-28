@@ -68,7 +68,7 @@ class BattleShipGame
       game.start
 
       while !game.complete?
-        print 'Please enter the shooting position：'
+        output.print 'Please enter the shooting position：'
         begin
           output.puts game.judge(input.gets.chomp)
         rescue ArgumentError
