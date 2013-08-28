@@ -58,6 +58,28 @@ end
 class BattleShipGame
   attr_reader :count
 
+  class << self
+    def play(input, output)
+      game = BattleShipGame.new([
+        Ship.new(:vega),
+        Ship.new(:altair),
+        Ship.new(:deneb)
+      ])
+      game.start
+
+      while !game.complete?
+        print 'Please enter the shooting position：'
+        begin
+          output.puts game.judge(input.gets.chomp)
+        rescue ArgumentError
+          output.puts 'please enter within A1-G7'
+        end
+      end
+
+      output.puts "You threw #{game.count} bombs"
+    end
+  end
+
   def initialize(ships)
     @ships = ships
     @count = 0
@@ -115,20 +137,4 @@ class BattleShipGame
   end
 end
 
-game = BattleShipGame.new([
-  Ship.new(:vega),
-  Ship.new(:altair),
-  Ship.new(:deneb)
-])
-game.start
-
-while !game.complete?
-  print 'Please enter the shooting position：'
-  begin
-    puts game.judge(gets.chomp)
-  rescue ArgumentError
-    puts 'please enter within A1-G7'
-  end
-end
-
-puts "You threw #{game.count} bombs"
+BattleShipGame.play(STDIN, STDOUT)
