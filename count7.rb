@@ -1,7 +1,21 @@
+class String
+  def numeral?
+    Integer(self)
+    true
+  rescue ArgumentError
+    false
+  end
+end
+
 def count7(input, output)
   output.print '整数を入力してください:'
   num = input.gets.chomp
-  output.puts "#{calculate(num)}個"
+
+  if num.numeral?
+    output.puts "#{calculate(num)}個"
+  else
+    output.puts 'ぶー'
+  end
 end
 
 def calculate(num)
