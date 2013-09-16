@@ -18,7 +18,8 @@ def perform_count7(input, output)
   if num.numeral?
     output.puts "#{count7(num)}個"
   else
-    output.puts 'ぶー'
+    output.puts '入力できるのは整数だけです。'
+    perform_count7(STDIN, STDOUT)
   end
 end
 
