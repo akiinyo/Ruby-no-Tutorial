@@ -5,6 +5,10 @@ class String
   rescue ArgumentError
     false
   end
+
+  def last(n = 1)
+    self.reverse[0, n]
+  end
 end
 
 def count7(input, output)
@@ -19,12 +23,7 @@ def count7(input, output)
 end
 
 def calculate(num)
-  count = 0
-
-  ('1'..num).each do |n|
-    count += 1 if n.include?('7')
-  end
-  count
+  ('1'..num).to_a.count {|n| n.last(2).include?('7') }
 end
 
 if $0 == __FILE__
