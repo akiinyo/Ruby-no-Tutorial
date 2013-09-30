@@ -7,14 +7,11 @@ class Caesar
     @shift_count = 0
   end
 
-  def convert(hint)
-    return '解読失敗！変換できない文字が含まれています。' unless can_convert?
+  def decipher_by(hint)
+    raise StandardError, '解読失敗！変換できない文字が含まれています。' unless can_convert?
+    raise StandardError, "解読失敗！「#{hint}」は含まれていません。"    unless find_key_by(hint) > 1
 
-    if find_key_by(hint) > 1
-      return message
-    else
-      return "解読失敗！「#{hint}」は含まれていません。"
-    end
+    message
   end
 
   def find_key_by(hint)
@@ -25,10 +22,10 @@ class Caesar
       @shift_count += 1
     end
 
-    if @shift_count >= CHARACTER_SET.size
-      -1
-    else
+    if @shift_count < CHARACTER_SET.size
       @shift_count
+    else
+      -1
     end
   end
 
@@ -41,8 +38,8 @@ class Caesar
   def shift(char)
     return char if char == ' '
 
-    CHARACTER_SET[CHARACTER_SET.index(char) + @shift_count] ||
-    CHARACTER_SET[(CHARACTER_SET.index(char) + @shift_count) - CHARACTER_SET.size]
+    shifted_index = CHARACTER_SET.index(char) + @shift_count
+    CHARACTER_SET[shifted_index] || CHARACTER_SET[shifted_index - CHARACTER_SET.size]
   end
 
   def can_convert?
@@ -54,5 +51,9 @@ if $0 == __FILE__
   ciphertext = 'ygixurqiuaidq-giy z b z cakiuitczbiotuowqza iyqzitczbiyqjimxxibtqiotuowqzaim-qivcabimxuwqkimzpimxxibtqiyqzim-qivcabimxuwqjimzpkiuzio zaq,cqzoqkiuimyimixubbxqin -qpjincbiurig cibmyqiyqkiubieuxxinqimaiuribtqiacziomyqib iatuzqi ziygixurqjiuiatmxxiwz eibtqia czpi rimiabq.ibtmbieuxxinqipurrq-qzbir- yimxxibtqi btq-aji btq-iabq.aiaqzpiyqitc--guzsinmowiczpq-zqmbtibtqis- czpjig c-aieuxxiomxxiyqkixuwqiycauoki cbi riyginc-- ej'
 
   caesar = Caesar.new(ciphertext)
-  puts caesar.convert('shine')
+  begin
+    puts caesar.decipher_by('shine')
+  rescue StandardError => e
+    puts e.message
+  end
 end

@@ -6,7 +6,7 @@ describe '#convert' do
     let(:caesar) { Caesar.new(',igglwm') }
 
     specify do
-      caesar.convert('aki').should == 'akiinyo'
+      caesar.decipher_by('aki').should == 'akiinyo'
     end
   end
 
@@ -14,7 +14,7 @@ describe '#convert' do
     let(:caesar) { Caesar.new(';@*&#$!?~+=|') }
 
     specify do
-      caesar.convert('aki').should == '解読失敗！変換できない文字が含まれています。'
+      expect { caesar.decipher_by('aki') }.to raise_error(StandardError, '解読失敗！変換できない文字が含まれています。')
     end
   end
 
@@ -22,7 +22,7 @@ describe '#convert' do
     let(:caesar) { Caesar.new('abcdefg') }
 
     specify do
-      caesar.convert('aki').should == '解読失敗！「aki」は含まれていません。'
+      expect { caesar.decipher_by('aki') }.to raise_error(StandardError, "解読失敗！「aki」は含まれていません。")
     end
   end
 end
