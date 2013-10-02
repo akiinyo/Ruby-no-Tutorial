@@ -1,6 +1,6 @@
 class Caesar
   attr_reader :shift_count
-  CHARACTER_SET = 'abcdefghijklmnopqrstuvwxyz.,-'.split(//)
+  CHARACTER_SET = 'abcdefghijklmnopqrstuvwxyz .,-'.split(//)
 
   def initialize(ciphertext)
     @ciphertext  = ciphertext
@@ -36,9 +36,8 @@ class Caesar
   end
 
   def shift(char)
-    return char if char == ' '
-
     shifted_index = CHARACTER_SET.index(char) + @shift_count
+
     CHARACTER_SET[shifted_index] || CHARACTER_SET[shifted_index - CHARACTER_SET.size]
   end
 
