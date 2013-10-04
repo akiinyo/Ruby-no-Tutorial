@@ -8,13 +8,13 @@ class Caesar
 
   def decipher_by(hint)
     raise StandardError, '解読失敗！変換できない文字が含まれています。' unless can_convert?
-    find_key_by(hint)
+    decide_shift_count_by(hint)
     raise StandardError, "解読失敗！「#{hint}」は含まれていません。"    unless include_hint?
 
     message
   end
 
-  def find_key_by(hint)
+  def decide_shift_count_by(hint)
     CHARACTER_SET.size.times do
       if message.include?(hint)
         break
