@@ -1,3 +1,11 @@
+def next_prime(n)
+  num = n.succ
+  while !prime?(num)
+    break if prime?( num += 1 )
+  end
+  num
+end
+
 def prime?(n)
   num = 2
   n.times do
@@ -5,4 +13,12 @@ def prime?(n)
     num += 1
   end
   true
+end
+
+if $0 == __FILE__
+  begin
+    puts next_prime(Integer(ARGV[0]))
+  rescue ArgumentError
+    puts '入力できるのは数字のみです。'
+  end
 end
