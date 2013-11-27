@@ -7,6 +7,8 @@ def next_prime(n)
 end
 
 def prime?(n)
+  return false if n < 2
+
   num = 2
   n.times do
     return false if (n%num == 0) && (n != num)
