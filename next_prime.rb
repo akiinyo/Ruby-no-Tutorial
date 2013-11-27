@@ -22,5 +22,7 @@ if $0 == __FILE__
     puts next_prime(Integer(ARGV[0]))
   rescue ArgumentError
     puts '入力できるのは数字のみです。'
+  rescue TypeError
+    puts '数字を入力してください。'
   end
 end
