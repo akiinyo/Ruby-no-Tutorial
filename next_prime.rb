@@ -1,7 +1,7 @@
 def next_prime(n)
   num = n.succ
   while !prime?(num)
-    break if prime?( num += 1 )
+    num += 1
   end
   num
 end
