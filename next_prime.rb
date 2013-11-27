@@ -9,10 +9,8 @@ end
 def prime?(n)
   return false if n < 2
 
-  num = 2
-  n.times do
-    return false if (n%num == 0) && (n != num)
-    num += 1
+  (2...n).each do |num|
+    return false if (n%num == 0)
   end
   true
 end
