@@ -9,10 +9,7 @@ end
 def prime?(n)
   return false if n < 2
 
-  (2...n).each do |num|
-    return false if (n%num == 0)
-  end
-  true
+  (2...n).all? {|num| n%num != 0 }
 end
 
 if $0 == __FILE__
