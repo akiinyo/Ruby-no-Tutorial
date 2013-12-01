@@ -1,6 +1,6 @@
 def next_prime(n)
   num = n.succ
-  while !prime?(num)
+  until prime?(num)
     num += 1
   end
   num
