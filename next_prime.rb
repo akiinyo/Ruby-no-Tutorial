@@ -6,10 +6,10 @@ def next_prime(n)
   num
 end
 
-def prime?(n)
-  return false if n < 2
+def prime?(num)
+  return false if num < 2
 
-  (2...n).all? {|num| n%num != 0 }
+  (2...num).all? {|n| num%n != 0 }
 end
 
 if $0 == __FILE__
