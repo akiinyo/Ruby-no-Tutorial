@@ -1,3 +1,3 @@
-ARGV.each do |file_path|
-  puts File.read(file_path)
+ARGF.each do |line|
+  puts line
 end
