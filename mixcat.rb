@@ -13,7 +13,5 @@ end
 max_lineno = contents.map {|c| c.size }.max
 
 max_lineno.times do |i|
-  contents.each do |content|
-    puts content[i] if content[i]
-  end
+  puts contents.map {|content| content[i] }.join
 end
