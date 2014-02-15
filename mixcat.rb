@@ -1,15 +1,19 @@
-contents   = []
-max_lineno = 0
+contents     = []
+file_content = []
 
 while line = ARGF.gets
-  if max_lineno < (lineno = ARGF.file.lineno)
-    max_lineno = lineno
-  end
+  file_content << line
 
-  contents << Hash[lineno, line]
+  if ARGF.eof?
+    contents << file_content
+    file_content = []
+  end
 end
 
-1.upto(max_lineno) do |i|
-  lines = contents.find_all {|c| c.key?(i) }
-  lines.each {|m| puts m.values }
+max_lineno = contents.map {|c| c.size }.max
+
+max_lineno.times do |i|
+  contents.each do |content|
+    puts content[i] if content[i]
+  end
 end
